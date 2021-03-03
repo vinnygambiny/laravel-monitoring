@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\Facades\Gate;
+use Vinnygambiny\LaravelMonitoring\Providers\MonitoringApplicationServiceProvider;
+
+class MonitoringServiceProvider extends MonitoringApplicationServiceProvider
+{
+    protected function gate()
+    {
+        Gate::define('viewMonitoring', function ($user) {
+            return in_array($user->email, [
+                //
+            ]);
+        });
+    }
+}
