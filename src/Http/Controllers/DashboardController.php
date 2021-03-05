@@ -17,6 +17,7 @@ class DashboardController extends Controller
                 config('monitoring.aws.config.credentials.secret') &&
                 config('monitoring.aws.config.region'),
             'statusPages' => config('monitoring.status_pages', []),
+            'thresholdMaxWaitTime' => config('monitoring.threshold_max_wait_time', 300),
         ]);
     }
 }

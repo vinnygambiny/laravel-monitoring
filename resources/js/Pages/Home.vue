@@ -10,11 +10,11 @@
             </div>
 
             <div v-if="hasHorizon">
-                <horizon-stats />
+                <horizon-stats :threshold-max-wait-time="thresholdMaxWaitTime" />
             </div>
 
             <div v-if="hasAws">
-                <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8">
+                <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-6">
                     <!-- Left column -->
                     <div class="grid grid-cols-1 gap-4 lg:col-span-2 h-full">
                         <cloud-watch-alarms />
@@ -26,7 +26,7 @@
             </div>
 
             <!-- Main 3 column grid -->
-            <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8" v-if="hasHorizon">
+            <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-6" v-if="hasHorizon">
                 <!-- Left column -->
                 <div class="grid grid-cols-1 gap-4 lg:col-span-2">
                     <section aria-labelledby="section-1-title">
@@ -87,6 +87,10 @@
             hasAws: {
                 type: Boolean,
                 default: false,
+            },
+            thresholdMaxWaitTime: {
+                type: Number,
+                default: 300,
             },
             statusPages: {
                 type: Array,

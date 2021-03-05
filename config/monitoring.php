@@ -6,6 +6,8 @@ return [
 
     'middleware' => ['web'],
 
+    'threshold_max_wait_time' => 300, // seconds
+
     'status_pages' => [],
 
     'aws' => [

@@ -35,10 +35,29 @@
                     Max wait time <span v-if="maxWaitQueue">({{ maxWaitQueue }})</span>
                 </dt>
                 <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    {{ maxWaitTime }}
+                    {{ maxWaitTimeReadable }}
                 </dd>
             </div>
         </div>
+        <alert-modal :show="openAlertModal" @close="openAlertModal = false">
+            <template #title>
+                Attention
+            </template>
+
+            <template #content>
+                The queue <strong>{{ maxWaitQueue }}</strong> has a max wait time of <strong>{{ maxWaitTimeReadable }}</strong>
+            </template>
+
+            <template #footer>
+                <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" type="button" @click="snoozeAlert">
+                    Snooze 5 minutes
+                </button>
+
+                <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" type="button" @click="openAlertModal = false">
+                    Close
+                </button>
+            </template>
+        </alert-modal>
     </dl>
 </template>
 
@@ -46,19 +65,36 @@
     import values from 'lodash/values.js';
     import keys from 'lodash/keys.js';
     import { determinePeriod, readableTimeSeconds } from '@/utils.js';
+    import AlertModal from '@/components/modal/AlertModal.vue';
 
     export default {
+        components: { AlertModal },
+
+        props: {
+            thresholdMaxWaitTime: {
+                type: Number,
+                default: 300,
+            },
+        },
+
         data() {
             return {
                 timeout: null,
+                timeoutSnooze: null,
                 stats: {},
+                openAlertModal: false,
+                alertSnoozed: false,
             };
         },
 
         computed: {
             maxWaitTime() {
-                if (values(this.stats.wait)[0]) {
-                    return readableTimeSeconds(values(this.stats.wait)[0]);
+                return values(this.stats.wait)[0];
+            },
+
+            maxWaitTimeReadable() {
+                if (this.maxWaitTime) {
+                    return readableTimeSeconds(this.maxWaitTime);
                 }
 
                 return '-';
@@ -85,6 +121,15 @@
             },
         },
 
+        watch: {
+            maxWaitTime: {
+                immediate: true,
+                handler() {
+                    this.openAlertModal = this.maxWaitTime >= this.thresholdMaxWaitTime && !this.alertSnoozed;
+                },
+            },
+        },
+
         methods: {
             async fetchStats() {
                 const response = await this.$axios.get(route('horizon.stats.index'));
@@ -97,6 +142,13 @@
 
                 this.timeout = setTimeout(this.refreshStats, 5000);
             },
+
+            snoozeAlert() {
+                this.openAlertModal = false;
+                this.alertSnoozed = true;
+
+                this.timeoutSnooze = setTimeout(() => { this.alertSnoozed = false }, 300000);
+            },
         },
 
         mounted() {
@@ -105,6 +157,7 @@
 
         beforeDestroy() {
             clearTimeout(this.timeout);
+            clearTimeout(this.timeoutSnooze);
         },
     };
 </script>

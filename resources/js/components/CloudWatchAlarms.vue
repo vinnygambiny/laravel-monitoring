@@ -16,20 +16,54 @@
                 {{ metricAlarm.AlarmName }}
             </span>
         </div>
+        <alert-modal :show="!!metricInAlarm.AlarmName" @close="closeAlertModal">
+            <template #title>
+                Attention
+            </template>
+
+            <template #content>
+                The alarm <strong>{{ metricInAlarm.AlarmName }}</strong> is in alarm state
+            </template>
+
+            <template #footer>
+                <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" type="button" @click="snoozeAlert">
+                    Snooze 5 minutes
+                </button>
+
+                <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" type="button" @click="closeAlertModal">
+                    Close
+                </button>
+            </template>
+        </alert-modal>
     </section>
 </template>
 
 <script>
+    import AlertModal from '@/components/modal/AlertModal.vue';
+
     export default {
+        components: { AlertModal },
+
         data() {
             return {
                 timeout: null,
+                timeoutSnooze: null,
+                metricInAlarm: {},
+                alertSnoozed: false,
                 metricAlarms: [],
             };
         },
 
-        computed: {
-
+        watch: {
+            metricAlarms: {
+                immediate: true,
+                deep: true,
+                handler() {
+                    this.metricInAlarm = this.metricAlarms.find((metric) => {
+                        return metric.StateValue == 'ALARM';
+                    }) || {};
+                },
+            },
         },
 
         methods: {
@@ -56,6 +90,17 @@
 
                 return 'text-gray-400';
             },
+
+            snoozeAlert() {
+                this.openAlertModal = false;
+                this.alertSnoozed = true;
+
+                this.timeoutSnooze = setTimeout(this.closeAlertModal, 300000);
+            },
+
+            closeAlertModal() {
+                this.metricInAlarm = {};
+            },
         },
 
         created() {
@@ -64,6 +109,7 @@
 
         beforeDestroy() {
             clearTimeout(this.timeout);
+            clearTimeout(this.timeoutSnooze);
         },
     };
 </script>
