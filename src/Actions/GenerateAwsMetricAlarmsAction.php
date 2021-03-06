@@ -9,9 +9,9 @@ class GenerateAwsMetricAlarmsAction
 {
     protected $client;
 
-    public function __construct(Sdk $client)
+    public function __construct(Sdk $sdk)
     {
-        $this->client = $client->createClient('CloudWatch');
+        $this->client = $sdk->createClient('CloudWatch');
     }
 
     public function execute()
