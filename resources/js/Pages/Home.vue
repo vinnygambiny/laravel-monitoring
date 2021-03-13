@@ -26,10 +26,10 @@
             </div>
 
             <!-- Main 3 column grid -->
-            <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-6" v-if="hasHorizon">
+            <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-6">
                 <!-- Left column -->
                 <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-                    <section aria-labelledby="section-1-title">
+                    <section aria-labelledby="section-1-title" v-if="hasHorizon">
                         <div class="rounded-lg bg-white overflow-hidden shadow">
                             <div class="p-6">
                                 <h2 id="section-1-title" class="text-lg font-medium">
@@ -47,10 +47,23 @@
 
                 <!-- Right column -->
                 <div class="grid grid-cols-1 gap-4">
-                    <section aria-labelledby="section-2-title">
+                    <section aria-labelledby="section-2-title" v-if="hasHealthChecks">
                         <div class="rounded-lg bg-white overflow-hidden shadow">
                             <div class="p-6">
                                 <h2 id="section-2-title" class="text-lg font-medium">
+                                    Health Checks
+                                </h2>
+                                <div class="flow-root">
+                                    <health-checks />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section aria-labelledby="section-3-title" v-if="hasHorizon">
+                        <div class="rounded-lg bg-white overflow-hidden shadow">
+                            <div class="p-6">
+                                <h2 id="section-3-title" class="text-lg font-medium">
                                     Current Workload
                                 </h2>
                                 <div class="flow-root">
@@ -71,16 +84,28 @@
     import HorizonStats from '../components/HorizonStats.vue';
     import FailedJobs from '../components/FailedJobs.vue';
     import Workloads from '../components/Workloads.vue';
+    import HealthChecks from '../components/HealthChecks.vue';
     import CloudWatchAlarms from '../components/CloudWatchAlarms.vue';
     import CloudWatchGraph from '../components/CloudWatchGraph.vue';
 
     export default {
         components: {
-            FailedJobs, HorizonStats, StatusBadge, Default, Workloads, CloudWatchAlarms, CloudWatchGraph,
+            FailedJobs,
+            HorizonStats,
+            StatusBadge,
+            Default,
+            Workloads,
+            CloudWatchAlarms,
+            CloudWatchGraph,
+            HealthChecks,
         },
 
         props: {
             hasHorizon: {
+                type: Boolean,
+                default: false,
+            },
+            hasHealthChecks: {
                 type: Boolean,
                 default: false,
             },

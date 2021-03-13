@@ -12,6 +12,7 @@ class DashboardController extends Controller
     {
         return Inertia::render('Home', [
             'hasHorizon' => Route::has('horizon.stats.index'),
+            'hasHealthChecks' => !!config('monitoring.healthchecks.key'),
             'hasAws' => config('monitoring.aws.cloudwatch') &&
                 config('monitoring.aws.config.credentials.key') &&
                 config('monitoring.aws.config.credentials.secret') &&

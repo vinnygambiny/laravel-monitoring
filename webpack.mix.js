@@ -25,4 +25,6 @@ mix.setPublicPath('public')
 
 if (mix.inProduction()) {
     mix.version();
+} else {
+    mix.copy('public', '../../public/vendor/monitoring');
 }

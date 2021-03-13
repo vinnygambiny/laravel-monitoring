@@ -4,6 +4,8 @@ import {
     formatDuration,
     intervalToDuration,
     parseISO,
+    differenceInSeconds,
+    formatDistanceToNow,
 } from 'date-fns';
 
 export function formatDateUnixTime(unixTime) {
@@ -33,6 +35,10 @@ export function readableTimeSeconds(seconds) {
 export function determinePeriod(minutes) {
     const durations = intervalToDuration({ start: 0, end: minutes * 60000 });
     return formatDuration(durations);
+}
+
+export function readableTimeDistance(date) {
+    return formatDistanceToNow(formatDateString(date));
 }
 
 /**

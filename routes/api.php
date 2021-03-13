@@ -1,8 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Vinnygambiny\LaravelMonitoring\Http\Controllers\API\CloudWatchAlarmsController;
 use Vinnygambiny\LaravelMonitoring\Http\Controllers\API\CloudWatchGraphController;
-use Illuminate\Support\Facades\Route;
+use Vinnygambiny\LaravelMonitoring\Http\Controllers\API\HealthChecksController;
 
 
 Route::get('/cloudwatch/alarms', CloudWatchAlarmsController::class)
@@ -10,3 +11,6 @@ Route::get('/cloudwatch/alarms', CloudWatchAlarmsController::class)
 
 Route::get('/cloudwatch/graph', CloudWatchGraphController::class)
     ->name('monitoring.api.cloudwatch.graph');
+
+Route::get('/healthcheks', HealthChecksController::class)
+    ->name('monitoring.api.healthchecks');

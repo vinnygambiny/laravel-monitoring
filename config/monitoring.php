@@ -10,6 +10,10 @@ return [
 
     'status_pages' => [],
 
+    'healthchecks' => [
+        'key' => env('HEALTHCHECKS_KEY', ''),
+    ],
+
     'aws' => [
         'cloudwatch' => true,
 
